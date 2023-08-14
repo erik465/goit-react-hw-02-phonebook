@@ -16,11 +16,17 @@ export class App extends Component {
       {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
     ],
     filter : '',
-    name : '',
-    number: '',
+    
   }
 
   addContact = (newName, newNumber) =>{
+    this.state.contacts.forEach(contact => {
+      if(newName === contact.name){
+        alert('Contact with this name already added');
+        throw new Error("Contact with this name already added");
+      }
+    })
+
     this.setState(prevState => {
       return (
         {
@@ -31,15 +37,38 @@ export class App extends Component {
     })
   }
 
-  render() {
+  deleteContact = (contactId) =>{
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        contacts : prevState.contacts.filter(contact => contact.id !== contactId)
+      }
+    })
+  }
 
+  createVisibleContacts = () =>{
+    const visibleContacts = this.state.filter.trim() === '' ? this.state.contacts : this.state.contacts.filter(contact => contact.name.toLocaleLowerCase().includes(this.state.filter.toLocaleLowerCase().trim()))
+    return visibleContacts
+  }
+
+  changeFilter = (filterQuery) =>{
+    this.setState(prevState => {
+      return{
+        ...prevState,
+        filter : filterQuery
+      }
+    })
+  }
+
+
+  render() {
     return (
       <div>
         <h1>Phonebook</h1>
         <AddContact addContact={this.addContact}/>
         <h2>Contacts</h2>
-        <ContactFilter />
-        <ContactsList contacts={this.state.contacts}/>
+        <ContactFilter createVisibleContacts={this.createVisibleContacts} changeFilter={this.changeFilter}/>
+        <ContactsList contacts={this.createVisibleContacts()} deleteContact={this.deleteContact}/>
       </div>
     );
   }

@@ -1,10 +1,10 @@
-import { Formik, Field, ErrorMessage } from 'formik';
+import { Formik, Field } from 'formik';
 import { StyledForm, StyledError } from './AddContact.styled';
 import * as Yup from 'yup';
 
 
 
-
+const phoneRegExp = /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/
 
 const SignupSchema = Yup.object().shape({
   name: Yup.string()
@@ -12,9 +12,7 @@ const SignupSchema = Yup.object().shape({
     .max(50, 'Too Long!')
     .required('Required'),
   number: Yup.string()
-    .min(2, 'Too Short!')
-    .max(50, 'Too Long!')
-    .typeError('This must be (123-123-123)')
+    .matches(phoneRegExp, 'Enter a valid number')
     .required('Required'),
   
 });
@@ -41,11 +39,10 @@ export const AddContact = ({addContact}) =>{
           <Field 
             id="number" 
             name="number" 
-            type="tel    " 
+            type="tel" 
             placeholder="Number" 
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           />
-          <StyledError name='name' component='span'/>
+          <StyledError name='number' component='span'/>
 
          
           <button type="submit">Add contact</button>
